@@ -1,0 +1,16 @@
+{
+  "name": "dom-js-chains",
+  "repo": "dombojs/dom-js-chains",
+  "description": "data-js facade for component/dom",
+  "version": "0.0.1",
+  "keywords": ["dom", "data-js"],
+  "dependencies": {
+    "component/dom": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}
