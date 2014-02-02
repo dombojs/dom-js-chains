@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>dom - data-js chains</title>
+</head>
+<body>
+
+<div data-js='["css", "color", "red"],["css | .big", "font-size", 30]'>
+    <div data-js='["html | .greeting", "hello"]'>
+        <span class="greeting"></span>
+        <span class="big"> world</span>
+    </div>
+</div>
+
+<script src="../build/build.js"></script>
+<script>
+
+var $ = require('dom-js-chains');
+$('body').js();
+
+</script>
+
+</body>
+</html>

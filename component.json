@@ -2,10 +2,14 @@
   "name": "dom-js-chains",
   "repo": "dombojs/dom-js-chains",
   "description": "data-js facade for component/dom",
-  "version": "0.0.1",
-  "keywords": ["dom", "data-js"],
+  "version": "0.0.2",
+  "keywords": [
+    "dom",
+    "data-js"
+  ],
   "dependencies": {
-    "component/dom": "*"
+    "component/dom": "*",
+    "dombojs/dom-tree": "*"
   },
   "development": {},
   "license": "MIT",

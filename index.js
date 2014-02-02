@@ -1,26 +1,20 @@
 
-var $ = require('dom');
+var $ = module.exports = require('dom');
 
-$.use('js', function() {
-
-    var set = [];
-
-    this.forEach(function() {
-        // include container if it has a data-js attribute
-        if (this.getAttribute('data-js')) set.push(this);
-        // grab descendants with data-js attributes
-        $('[data-js]', this).forEach(function() {
-            set.push(this);
-        });
-    });
-
-    // execute js
-    return $(set).forEach(function() {
-        // expect data-js="[fn],[fn]"
-        exec($(this), JSON.parse('['+this.getAttribute('data-js')+']'));
-    });
-
+$.use({
+    tree: require('dom-tree'),
+    js: js
 });
+
+function js(options) {
+    var tree = $('[data-lib],[data-js]', this).tree();
+    // execute js
+    tree.visit(function(node) {
+        // expect data-js="[fn],[fn]"
+        exec($(node), JSON.parse('['+node.getAttribute('data-js')+']'));
+    });
+    return this;
+}
 
 // recursive exec
 function exec(el, js) {
@@ -32,7 +26,7 @@ function exec(el, js) {
         // assume 0th entry is function name, rest are args
         var plugin = js[i][0];
         // split into function | scope components
-        var parts = plugin.replace(/ /g).split('|');
+        var parts = plugin.replace(/ /g, '').split('|');
         // expect function to be on prototype
         var fn = $.List.prototype[parts[0]];
 
