@@ -5,18 +5,53 @@
 </head>
 <body>
 
-<div data-js='["css", "color", "red"],["css | .big", "font-size", 30]'>
-    <div data-js='["html | .greeting", "hello"]'>
-        <span class="greeting"></span>
-        <span class="big"> world</span>
+<div data-bundle="root" data-js='
+    ["root", 500],
+    ["css | .big", "font-size", 30],
+    ["css", {"border": "1px solid red", "color": "red"}]
+'>
+
+    <div data-bundle="branch">
+
+        <div data-js='["branch", 450],["css", "background", "yellow"]'>branch</div>
+
+        <div data-bundle="leaf" data-js='["html | .greeting", "hello"]'>
+            <span class="greeting"></span>
+            <span class="big"> world</span>
+            <textarea data-js='["leaf", 400]'></textarea>
+        </div>
+
     </div>
+
 </div>
 
 <script src="../build/build.js"></script>
 <script>
 
 var $ = require('dom-js-chains');
-$('body').js();
+
+function fake(bundle, next) {
+    return function() {
+
+        var index = bundle + '/index.js';
+
+        require.register(index, function() {
+            console.log(bundle + ' loaded');
+            $.use(bundle, function(w) {
+                console.log(bundle + ' executed');
+                return this.css('width', w);
+            });
+        });
+
+        require(index);
+        next();
+
+    };
+}
+
+$('body').js(function(bundle, next) {
+    setTimeout(fake(bundle, next), 1000 * Math.random());
+});
 
 </script>
 

@@ -2,21 +2,50 @@
 var $ = module.exports = require('dom');
 
 $.use({
-    tree: require('dom-tree'),
-    js: js
+    js: plugin,
+    tree: require('dom-tree')
 });
 
-function js(options) {
-    var tree = $('[data-lib],[data-js]', this).tree();
-    // execute js
+function plugin(load) {
+
+    var tree = $('[data-bundle],[data-js]', this).tree();
+
     tree.visit(function(node) {
-        // expect data-js="[fn],[fn]"
-        exec($(node), JSON.parse('['+node.getAttribute('data-js')+']'));
+
+        var el = node.domNode,
+            bundle = el.getAttribute('data-bundle'),
+            js = el.getAttribute('data-js');
+
+        node.execute = function() {
+            if (node.executed) return true;
+            if (js) exec($(el), JSON.parse('['+js+']'));
+            node.executed = true;
+        };
+
+        if (bundle) {
+            load(bundle, function() {
+                node.loaded = true;
+                treeExec();
+            });
+        } else {
+            node.loaded = true;
+        }
+
     });
+
+    function treeExec() {
+        tree.visit(function(node) {
+            if (!node.loaded) return false;
+            return node.execute();
+        });
+    }
+
+    treeExec();
+
     return this;
+
 }
 
-// recursive exec
 function exec(el, js) {
     // loop over function list
     for (var i = 0; i < js.length; i++) {
